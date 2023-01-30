@@ -1,0 +1,197 @@
+
+First of all, we need have the structure down for linked list. Where:
+    All linked list have a head that let us can find it from the memory.
+    Also a tail that tells us where does it end.
+    All linked list are build based on node, which is the basic element of the linked list.
+        All nodes need to contain 3 elements:
+            address of the previous node
+            address of the node after
+            value that are inside the node
+        Therefore, we need have two pointers inside the array.
+        And a private class or struct, node, need to be build inside the header file.
+    
+Pseudocode:
+
+Set constructor:
+    We need to set up the length equal to 0, which represent a empty list.
+    We need empty head
+    We need empty tail
+
+Set destructor:
+    If nothing is inside the list
+    nothing will happen
+    
+    Or we will find the tail of the list
+    delete the tail
+    make the node before tail as tail
+    stop when we find head
+    
+    delete head
+    
+Set copy other constructor:
+    copy down the length of other
+    
+    if other is empty, set this to empty and return
+    Save all of the value into the node and link it to the new node. Except for tail.
+    Save tail
+
+Set operator:
+    Verifies that the object is not being assigned to itself.
+    If the object is not being assigned to itself, it copies the value from the right-hand side to a temporary variable.
+    Then, it swaps the left-hand side with the temporary variable.
+    Finally, it returns the object.
+    
+Set empty:
+    return the logic statement if the length is 0
+    
+Set size:
+    return the length of the list
+    
+Set insert:
+    If nothing inside the list, insert that element into the list
+    and consider it as head and tail
+    
+    Check if the value is inside
+        If yes, we do nothing and return false
+    
+    create a new Node for the value
+    place it inside the Node
+    link it to tail
+    set the new Node as tail
+    
+    
+Set erase:
+    First make sure that value is inside the list. If not, return false.
+    Find the address of the that node.
+    link the node in front of that node to the node after that node.
+    erase it by delete.
+
+Set contain:
+    create new node as a observer
+    check if the value is already inside the list
+    
+Set get:
+    create a new node as a observer
+    
+    set up a nest loop which will check if that value is greater than a specific amount of value inside the list
+    count 1 up if the value is larger than the value we choose.
+    restart counting for each turn
+    
+Set swap:
+    to swap the Set, we need to swap the size of both set.
+    And swap the elements that contain in both sets.
+    because we can find the body of a list by finding it's head and tail.
+    we can only swap the head and tail between both set.
+
+void unite:
+    create new node as a observer
+    insert all of the element in s1 into result
+    repeat the step for s1's length time
+    create new node as a observer
+    insert all of the element in s2 into result
+    repeat the step for s2's length time
+    
+void butNot:
+    create a nest loop
+    check if the value in s1 is in s2
+    if that value is in s2, insert that as result
+
+
+TEST CASE:
+        #include "Set.h"
+        #include <iostream>
+        #include <cassert>
+        using namespace std;
+
+        void test()
+        {
+            Set uls;
+            assert(uls.insert(20));
+            assert(uls.insert(10));
+            assert(uls.size() == 2);
+            assert(uls.contains(10));
+            ItemType x = 30;
+            assert(uls.get(0, x)  &&  x == 10);
+            assert(uls.get(1, x)  &&  x == 20);
+        }
+
+        int main()
+        {
+            test();
+            cout << "Passed all tests" << endl;
+        }
+        
+        #include "Set.h"
+        #include <string>
+        #include <iostream>
+        #include <cassert>
+        using namespace std;
+
+        void test()
+        {
+            Set ss;
+            assert(ss.insert("roti"));
+            assert(ss.insert("pita"));
+            assert(ss.size() == 2);
+            assert(ss.contains("pita"));
+            ItemType x = "laobing";
+            assert(ss.get(0, x)  &&  x == "pita");
+            assert(ss.get(1, x)  &&  x == "roti");
+        }
+
+        int main()
+        {
+            test();
+            cout << "Passed all tests" << endl;
+        }
+
+        #include "Set.h"
+        #include <type_traits>
+
+        #define CHECKTYPE(c, f, r, a)  \
+        {  \
+         static_assert(std::is_same<decltype(&c::f), r (c::*)a>::value, \
+             "You did not declare " #c "::" #f " as the Project 2 spec does");  \
+         auto p = static_cast<r (c::*)a>(&c::f);  \
+         (void) p;  \
+        }
+        #define CHECKTYPENONMEMBER(f, r, a)  \
+        {  \
+         static_assert(std::is_same<decltype(&f), r (*)a>::value, \
+             "You did not declare " #f " as the Project 2 spec does");  \
+         auto p = static_cast<r (*)a>(f);  \
+         (void) p;  \
+        }
+
+        static_assert(std::is_default_constructible<Set>::value,
+                "Set must be default-constructible.");
+        static_assert(std::is_copy_constructible<Set>::value,
+                "Set must be copy-constructible.");
+        static_assert(std::is_copy_assignable<Set>::value,
+                "Set must be assignable.");
+
+        void thisFunctionWillNeverBeCalled()
+        {
+            CHECKTYPE(Set, empty,     bool, () const);
+            CHECKTYPE(Set, size,      int,  () const);
+            CHECKTYPE(Set, insert,    bool, (const ItemType&));
+            CHECKTYPE(Set, erase,     bool, (const ItemType&));
+            CHECKTYPE(Set, contains,  bool, (const ItemType&) const);
+            CHECKTYPE(Set, get,       bool, (int, ItemType&) const);
+            CHECKTYPE(Set, swap,      void, (Set&));
+            CHECKTYPENONMEMBER(unite,  void, (const Set&, const Set&, Set&));
+            CHECKTYPENONMEMBER(butNot, void, (const Set&, const Set&, Set&));
+        }
+        
+        
+        Set ss;  // ItemType is std::string
+        ss.insert("ccc");
+        ss.insert("aaa");
+        ss.insert("bbb");
+        ItemType x = "xxx";
+        assert(!ss.get(3, x)  &&  x == "xxx");  // x is unchanged
+        assert(ss.get(1, x)  &&  x == "bbb");   // "bbb" is greater than
+                                                // exactly 1 item
+
+        int main()
+        {}
